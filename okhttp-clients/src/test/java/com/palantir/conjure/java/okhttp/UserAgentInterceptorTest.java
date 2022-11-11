@@ -28,7 +28,7 @@ import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
-import org.junit.Rule;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -38,12 +38,17 @@ public final class UserAgentInterceptorTest {
     private static final UserAgent USER_AGENT = UserAgent.of(UserAgent.Agent.of("test", "1.2.3"));
     private static final UserAgentInterceptor interceptor = UserAgentInterceptor.of(USER_AGENT);
 
-    @Rule
-    public final MockWebServer server = new MockWebServer();
+    private final MockWebServer server = new MockWebServer();
 
     @BeforeEach
-    public void before() {
+    public void before() throws IOException {
+        server.start();
         server.enqueue(new MockResponse().setBody("\"foo\""));
+    }
+
+    @AfterEach
+    void after() throws IOException {
+        server.close();
     }
 
     @Test

@@ -72,7 +72,7 @@ import okhttp3.mockwebserver.SocketPolicy;
 import okio.BufferedSink;
 import okio.Okio;
 import okio.Source;
-import org.junit.Rule;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -85,14 +85,9 @@ import org.mockito.quality.Strictness;
 @MockitoSettings(strictness = Strictness.LENIENT)
 public final class OkHttpClientsTest extends TestBase {
 
-    @Rule
-    public final MockWebServer server = new MockWebServer();
-
-    @Rule
-    public final MockWebServer server2 = new MockWebServer();
-
-    @Rule
-    public final MockWebServer server3 = new MockWebServer();
+    private final MockWebServer server = new MockWebServer();
+    private final MockWebServer server2 = new MockWebServer();
+    private final MockWebServer server3 = new MockWebServer();
 
     private final HostMetricsRegistry hostEventsSink = new HostMetricsRegistry();
 
@@ -101,10 +96,24 @@ public final class OkHttpClientsTest extends TestBase {
     private String url3;
 
     @BeforeEach
-    public void before() {
+    public void before() throws IOException {
+        server.start();
+        server2.start();
+        server3.start();
         url = "http://localhost:" + server.getPort();
         url2 = "http://localhost:" + server2.getPort();
         url3 = "http://localhost:" + server3.getPort();
+    }
+
+    @AfterEach
+    void after() throws IOException {
+        try (MockWebServer s1 = server;
+                MockWebServer s2 = server2;
+                MockWebServer s3 = server3) {
+            s1.close();
+            s2.close();
+            s3.close();
+        }
     }
 
     @Test

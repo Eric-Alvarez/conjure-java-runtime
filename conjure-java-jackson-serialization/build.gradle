@@ -12,10 +12,7 @@ dependencies {
     api "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
     api "com.palantir.safe-logging:preconditions"
 
-    testImplementation "junit:junit"
     testImplementation "org.assertj:assertj-core"
     testImplementation 'org.junit.jupiter:junit-jupiter'
-    testRuntimeOnly 'org.junit.vintage:junit-vintage-engine', {
-        because 'allows JUnit 3 and JUnit 4 tests to run'
-    }
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
 }
